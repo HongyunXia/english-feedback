@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f6feb">
+  <meta name="description" content="适合镇江初中英语培训课后使用的家长反馈生成工具">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>初中英语课后反馈生成器</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --ink: #202633;
+      --muted: #667085;
+      --line: #dce3ec;
+      --brand: #1f6feb;
+      --brand-dark: #1557bd;
+      --soft: #edf5ff;
+      --soft-2: #f3f7fb;
+      --green: #16805a;
+      --red: #b42318;
+      --shadow: 0 14px 36px rgba(31, 41, 55, .08);
+      font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: linear-gradient(180deg, #eef5ff 0, var(--bg) 340px);
+    }
+
+    button, input, select, textarea { font: inherit; }
+
+    button { -webkit-tap-highlight-color: transparent; }
+
+    .app {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 26px 18px 34px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 7px;
+      font-size: clamp(26px, 4vw, 38px);
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .top-actions, .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(620px, 1.08fr) minmax(420px, .92fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 17px 19px 14px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .panel-body {
+      padding: 18px 19px 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .grid.two { grid-template-columns: repeat(2, 1fr); }
+
+    .field { margin-bottom: 16px; }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      background: #fff;
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color .18s, box-shadow .18s;
+    }
+
+    textarea {
+      min-height: 82px;
+      line-height: 1.65;
+      resize: vertical;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(31, 111, 235, .13);
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      min-height: 40px;
+      padding: 9px 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: background .18s, border-color .18s, transform .18s;
+    }
+
+    .btn:hover {
+      background: #f8fafc;
+      border-color: #c6d0dd;
+    }
+
+    .btn:active { transform: translateY(1px); }
+
+    .btn.primary {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .btn.primary:hover {
+      background: var(--brand-dark);
+      border-color: var(--brand-dark);
+    }
+
+    .btn.subtle { color: var(--muted); }
+
+    .count {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .templates {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 9px;
+      margin-bottom: 16px;
+    }
+
+    .template {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 11px;
+      min-height: 76px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .template strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .template span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .template.active {
+      background: var(--soft);
+      border-color: #8bb7ff;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0 10px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-title h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .knowledge-board {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .knowledge-group {
+      border: 1px solid var(--line);
+      background: var(--soft-2);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .knowledge-group h4 {
+      margin: 0 0 9px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .knowledge-group h4 span {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 12px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #344054;
+      border-radius: 999px;
+      padding: 7px 10px;
+      min-height: 34px;
+      cursor: pointer;
+      line-height: 1.25;
+      transition: background .18s, border-color .18s, color .18s;
+    }
+
+    .chip[aria-pressed="true"] {
+      background: var(--soft);
+      border-color: #7dafef;
+      color: #174ea6;
+      font-weight: 700;
+    }
+
+    .quick-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .result {
+      width: 100%;
+      min-height: 610px;
+      border: 0;
+      background: #fbfcff;
+      padding: 18px;
+      line-height: 1.9;
+      font-size: 16px;
+      resize: vertical;
+    }
+
+    .notice {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border: 1px solid #b8ead0;
+      border-radius: 8px;
+      background: #eefbf4;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .notice.show { display: block; }
+
+    .small {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    @media (max-width: 1080px) {
+      header { grid-template-columns: 1fr; }
+      .top-actions { justify-content: flex-start; }
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      body { background: #f6f8fb; }
+      .app { padding: 14px 10px 90px; }
+      h1 { font-size: 24px; }
+      .subtitle { font-size: 14px; }
+      header { margin-bottom: 12px; }
+      .panel-head, .panel-body { padding-left: 14px; padding-right: 14px; }
+      .grid, .grid.two, .templates, .knowledge-board { grid-template-columns: 1fr; }
+      .actions, .top-actions { justify-content: stretch; }
+      .top-actions {
+        position: sticky;
+        top: 0;
+        z-index: 4;
+        padding: 8px 0;
+        background: rgba(246, 248, 251, .94);
+        backdrop-filter: blur(10px);
+      }
+      .btn {
+        width: 100%;
+        min-height: 46px;
+      }
+      .chip {
+        min-height: 38px;
+        padding: 9px 12px;
+      }
+      input, select, textarea {
+        min-height: 44px;
+        font-size: 16px;
+      }
+      .result { min-height: 440px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <h1>初中英语课后反馈生成器</h1>
+        <p class="subtitle">按初一、初二、初三自动匹配英语知识点，勾选课堂内容、能力表现和薄弱点，一键生成可发给家长的反馈。</p>
+      </div>
+      <div class="top-actions">
+        <button class="btn subtle" id="resetBtn" type="button">清空</button>
+        <button class="btn primary" id="generateTopBtn" type="button">生成反馈</button>
+      </div>
+    </header>
+
+    <section class="layout">
+      <form class="panel" id="feedbackForm">
+        <div class="panel-head">
+          <h2>课堂勾选</h2>
+          <span class="count" id="filledCount">0 项已选择</span>
+        </div>
+        <div class="panel-body">
+          <div class="templates" id="templates">
+            <button class="template active" type="button" data-template="sync">
+              <strong>校内同步</strong>
+              <span>单元知识、课本重难点、作业订正</span>
+            </button>
+            <button class="template" type="button" data-template="grammar">
+              <strong>语法专项</strong>
+              <span>结构辨析、例句输出、题型训练</span>
+            </button>
+            <button class="template" type="button" data-template="reading">
+              <strong>阅读专项</strong>
+              <span>细节定位、推断概括、长难句</span>
+            </button>
+            <button class="template" type="button" data-template="exam">
+              <strong>试卷讲评</strong>
+              <span>错因归类、答题习惯、同类迁移</span>
+            </button>
+            <button class="template" type="button" data-template="writing">
+              <strong>作文专项</strong>
+              <span>审题、结构、句式升级、润色</span>
+            </button>
+          </div>
+
+          <div class="grid">
+            <div class="field">
+              <label for="student">学生姓名</label>
+              <input id="student" name="student" placeholder="如：王">
+            </div>
+            <div class="field">
+              <label for="grade">年级</label>
+              <select id="grade" name="grade">
+                <option value="g7">初一</option>
+                <option value="g8" selected>初二</option>
+                <option value="g9">初三</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="tone">反馈语气</label>
+              <select id="tone" name="tone">
+                <option value="warm" selected>温和鼓励</option>
+                <option value="direct">清晰客观</option>
+                <option value="strict">严格督促</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="style">话术样式</label>
+              <select id="style" name="style">
+                <option value="daily" selected>日常沟通</option>
+                <option value="progress">突出进步</option>
+                <option value="problem">问题诊断</option>
+                <option value="exam">提分导向</option>
+                <option value="habit">习惯督促</option>
+                <option value="brief">简洁专业</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="field">
+              <label for="learningStage">学生状态</label>
+              <select id="learningStage" name="learningStage">
+                <option value="steady" selected>稳步提升</option>
+                <option value="foundation">基础薄弱</option>
+                <option value="active">课堂积极</option>
+                <option value="passive">主动性不足</option>
+                <option value="sprint">冲刺提分</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="accuracy">课堂完成度</label>
+              <select id="accuracy" name="accuracy">
+                <option value="normal" selected>基本完成</option>
+                <option value="high">完成较好</option>
+                <option value="unstable">正确率不稳</option>
+                <option value="low">完成吃力</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="homeSupport">家长配合点</label>
+              <select id="homeSupport" name="homeSupport">
+                <option value="review" selected>督促复习订正</option>
+                <option value="dictation">检查背默</option>
+                <option value="reading">监督朗读阅读</option>
+                <option value="timing">关注限时训练</option>
+                <option value="independent">培养独立完成</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="length">篇幅</label>
+              <select id="length" name="length">
+                <option value="short">简短</option>
+                <option value="medium" selected>标准</option>
+                <option value="long">详细</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="section-title">
+            <h3>一键课堂场景</h3>
+          </div>
+          <div class="chips" id="presetBoard">
+            <button class="chip" type="button" data-preset="dictation">默写有进步</button>
+            <button class="chip" type="button" data-preset="grammarWeak">语法易混</button>
+            <button class="chip" type="button" data-preset="readingSlow">阅读卡壳</button>
+            <button class="chip" type="button" data-preset="writingUpgrade">作文升级</button>
+            <button class="chip" type="button" data-preset="examSprint">考前提分</button>
+            <button class="chip" type="button" data-preset="habit">习惯督促</button>
+          </div>
+
+          <div class="section-title">
+            <h3>分阶段知识点</h3>
+            <div class="quick-row">
+              <button class="btn subtle" id="clearKnowledgeBtn" type="button">清空知识点</button>
+              <button class="btn subtle" id="suggestBtn" type="button">推荐本阶段常用项</button>
+            </div>
+          </div>
+          <div class="knowledge-board" id="knowledgeBoard"></div>
+
+          <div class="section-title">
+            <h3>课堂表现与掌握情况</h3>
+          </div>
+          <div class="grid two">
+            <div class="field">
+              <label>课堂表现</label>
+              <div class="chips" data-field="performance">
+                <button class="chip" type="button">听课认真</button>
+                <button class="chip" type="button">能主动回答问题</button>
+                <button class="chip" type="button">课堂互动积极</button>
+                <button class="chip" type="button">做笔记较规范</button>
+                <button class="chip" type="button">注意力偶有分散</button>
+                <button class="chip" type="button">需要更多主动性</button>
+              </div>
+            </div>
+            <div class="field">
+              <label>掌握情况</label>
+              <div class="chips" data-field="mastery">
+                <button class="chip" type="button">基础概念已理解</button>
+                <button class="chip" type="button">能跟上课堂节奏</button>
+                <button class="chip" type="button">做题思路有进步</button>
+                <button class="chip" type="button">能够口头复述方法</button>
+                <button class="chip" type="button">细节运用还需巩固</button>
+                <button class="chip" type="button">独立完成不够稳定</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">
+            <h3>薄弱点与课后安排</h3>
+          </div>
+          <div class="grid two">
+            <div class="field">
+              <label>主要问题</label>
+              <div class="chips" data-field="problems">
+                <button class="chip" type="button">单词拼写不够牢</button>
+                <button class="chip" type="button">语法概念易混淆</button>
+                <button class="chip" type="button">阅读定位偏慢</button>
+                <button class="chip" type="button">长难句理解吃力</button>
+                <button class="chip" type="button">作文句式较单一</button>
+                <button class="chip" type="button">审题不够细致</button>
+                <button class="chip" type="button">错题订正不够深入</button>
+                <button class="chip" type="button">时间分配需要优化</button>
+              </div>
+            </div>
+            <div class="field">
+              <label>课后任务</label>
+              <div class="chips" data-field="homeworkTags">
+                <button class="chip" type="button">背默本课重点词汇</button>
+                <button class="chip" type="button">完成讲义错题订正</button>
+                <button class="chip" type="button">整理语法易错点</button>
+                <button class="chip" type="button">完成同类题巩固</button>
+                <button class="chip" type="button">每天朗读 10 分钟</button>
+                <button class="chip" type="button">作文按修改意见重写</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid two">
+            <div class="field">
+              <label for="customNote">个性化补充</label>
+              <textarea id="customNote" name="customNote" placeholder="可选：如今天默写进步明显，或某个题型仍需提醒"></textarea>
+            </div>
+            <div class="field">
+              <label for="customHomework">具体作业页码</label>
+              <textarea id="customHomework" name="customHomework" placeholder="可选：如完成讲义 P3-P5，订正试卷第 12、18、23 题"></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="generateBtn" type="button">生成反馈</button>
+            <button class="btn" id="sampleBtn" type="button">填入示例</button>
+          </div>
+          <p class="small">重点内容已内置为勾选项，空白补充只用于写特别具体的学生表现或作业页码。</p>
+        </div>
+      </form>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>家长反馈</h2>
+          <span class="count" id="wordCount">0 字</span>
+        </div>
+        <textarea class="result" id="result" placeholder="勾选左侧内容后，点击“生成反馈”。生成后仍可在这里直接微调。"></textarea>
+        <div class="panel-body">
+          <div class="actions">
+            <button class="btn primary" id="copyBtn" type="button">复制反馈</button>
+            <button class="btn" id="polishBtn" type="button">换一种说法</button>
+          </div>
+          <div class="notice" id="notice">已复制到剪贴板</div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const gradeNames = {
+      g7: "初一",
+      g8: "初二",
+      g9: "初三"
+    };
+
+    const state = {
+      template: "sync",
+      variant: 0
+    };
+
+    const templateCopy = {
+      sync: {
+        label: "校内同步",
+        focus: "校内同步知识梳理与课内重难点巩固",
+        method: "结合课本知识点、典型例题和课堂练习进行讲解"
+      },
+      grammar: {
+        label: "语法专项",
+        focus: "语法专项梳理和题型训练",
+        method: "先梳理结构和使用场景，再通过例句和题目训练落地"
+      },
+      reading: {
+        label: "阅读专项",
+        focus: "阅读理解方法训练",
+        method: "围绕关键词定位、信息筛选和长难句理解进行训练"
+      },
+      exam: {
+        label: "试卷讲评",
+        focus: "试卷错题讲评和薄弱题型归因",
+        method: "按错因分类讲解，并补充同类题帮助迁移"
+      },
+      writing: {
+        label: "作文专项",
+        focus: "作文审题、结构和表达升级",
+        method: "从审题、段落展开、句式和连接词几个方面进行修改"
+      }
+    };
+
+    const knowledge = {
+      g7: {
+        grammar: ["be 动词与人称代词", "一般现在时", "名词单复数", "物主代词", "there be 句型", "可数与不可数名词", "方位介词", "情态动词 can"],
+        vocabulary: ["Starter/Unit 高频词", "家庭与朋友话题词汇", "学校生活词汇", "食物与购物词汇", "时间日期表达", "音标与自然拼读", "单词拼写规则"],
+        reading: ["细节题关键词定位", "图片和标题预测", "代词指代", "表格信息提取", "简单主旨概括"],
+        writing: ["自我介绍", "介绍家人朋友", "校园生活短文", "饮食购物话题", "句子大小写和标点"],
+        listening: ["课堂指令理解", "数字时间听辨", "人物关系听辨", "日常问答反应"]
+      },
+      g8: {
+        grammar: ["一般过去时", "过去进行时", "现在完成时", "形容词副词比较级最高级", "情态动词 should/must", "不定代词", "宾语从句入门", "条件状语从句"],
+        vocabulary: ["八上/八下单元词汇", "动词过去式和过去分词", "健康与建议词汇", "旅行经历词汇", "环境与社会话题", "短语搭配积累", "易混词辨析"],
+        reading: ["细节题快速定位", "推理判断题", "段落主旨题", "长难句拆分", "完形上下文线索", "任务型阅读信息转换"],
+        writing: ["经历类作文", "建议类作文", "比较类作文", "活动计划", "连接词使用", "句式多样化"],
+        listening: ["听前预测", "关键词速记", "观点态度判断", "对话场景辨认"]
+      },
+      g9: {
+        grammar: ["被动语态", "宾语从句", "定语从句", "状语从句综合", "非谓语动词", "情态动词表推测", "时态语态综合", "主谓一致"],
+        vocabulary: ["中考高频词汇", "词形转换", "固定搭配和短语", "熟词生义", "易错易混词", "话题词块积累", "完形高频动词"],
+        reading: ["中考阅读细节题", "推理判断题", "主旨大意题", "词义猜测题", "七选五/还原阅读", "任务型阅读表达", "限时阅读训练"],
+        writing: ["中考应用文", "观点表达作文", "图表信息作文", "三段式结构", "高级句式替换", "开头结尾润色", "审题与要点覆盖"],
+        listening: ["中考听力审题", "数字和细节捕捉", "长对话信息整合", "短文听力速记"]
+      }
+    };
+
+    const groupNames = {
+      grammar: "语法",
+      vocabulary: "词汇",
+      reading: "阅读/完形",
+      writing: "写作",
+      listening: "听说"
+    };
+
+    const templateGroups = {
+      sync: ["grammar", "vocabulary", "reading", "writing", "listening"],
+      grammar: ["grammar", "vocabulary"],
+      reading: ["reading", "vocabulary"],
+      exam: ["grammar", "vocabulary", "reading", "writing"],
+      writing: ["writing", "grammar", "vocabulary"]
+    };
+
+    const suggestions = {
+      sync: {
+        g7: ["一般现在时", "名词单复数", "Starter/Unit 高频词", "细节题关键词定位", "自我介绍"],
+        g8: ["现在完成时", "形容词副词比较级最高级", "动词过去式和过去分词", "长难句拆分", "建议类作文"],
+        g9: ["宾语从句", "被动语态", "中考高频词汇", "中考阅读细节题", "中考应用文"]
+      },
+      grammar: {
+        g7: ["be 动词与人称代词", "一般现在时", "名词单复数", "物主代词"],
+        g8: ["一般过去时", "过去进行时", "现在完成时", "动词过去式和过去分词"],
+        g9: ["被动语态", "宾语从句", "定语从句", "时态语态综合"]
+      },
+      reading: {
+        g7: ["细节题关键词定位", "图片和标题预测", "代词指代", "表格信息提取"],
+        g8: ["细节题快速定位", "推理判断题", "长难句拆分", "完形上下文线索"],
+        g9: ["中考阅读细节题", "推理判断题", "词义猜测题", "七选五/还原阅读"]
+      },
+      exam: {
+        g7: ["一般现在时", "单词拼写规则", "细节题关键词定位", "句子大小写和标点"],
+        g8: ["现在完成时", "易混词辨析", "任务型阅读信息转换", "句式多样化"],
+        g9: ["中考高频词汇", "时态语态综合", "限时阅读训练", "审题与要点覆盖"]
+      },
+      writing: {
+        g7: ["自我介绍", "介绍家人朋友", "校园生活短文", "句子大小写和标点"],
+        g8: ["建议类作文", "连接词使用", "句式多样化", "活动计划"],
+        g9: ["中考应用文", "三段式结构", "高级句式替换", "审题与要点覆盖"]
+      }
+    };
+
+    const presetMap = {
+      dictation: ["单词拼写规则", "八上/八下单元词汇", "中考高频词汇", "听课认真", "做笔记较规范", "单词拼写不够牢", "背默本课重点词汇", "完成讲义错题订正"],
+      grammarWeak: ["一般现在时", "现在完成时", "宾语从句", "被动语态", "语法概念易混淆", "细节运用还需巩固", "整理语法易错点", "完成同类题巩固"],
+      readingSlow: ["细节题关键词定位", "细节题快速定位", "中考阅读细节题", "长难句拆分", "阅读定位偏慢", "长难句理解吃力", "完成同类题巩固"],
+      writingUpgrade: ["建议类作文", "中考应用文", "句式多样化", "高级句式替换", "作文句式较单一", "审题不够细致", "作文按修改意见重写"],
+      examSprint: ["中考高频词汇", "时态语态综合", "中考阅读细节题", "审题与要点覆盖", "时间分配需要优化", "错题订正不够深入", "完成同类题巩固"],
+      habit: ["做笔记较规范", "注意力偶有分散", "需要更多主动性", "独立完成不够稳定", "错题订正不够深入", "完成讲义错题订正"]
+    };
+
+    const stageCopy = {
+      steady: "目前整体处在稳步提升阶段，课堂吸收情况比之前更有连续性。",
+      foundation: "目前基础还需要继续夯实，尤其要把词汇、句子结构和基础语法先稳住。",
+      active: "课堂参与度比较好，愿意跟着老师思考和表达，这是后续提升很重要的基础。",
+      passive: "课堂上能跟着完成任务，但主动思考和主动表达还可以再加强。",
+      sprint: "现阶段更适合围绕得分点做针对性训练，把会做的题做稳，把易错点逐项清掉。"
+    };
+
+    const accuracyCopy = {
+      normal: "课堂练习基本能够完成，个别细节还需要订正后再巩固。",
+      high: "课堂练习完成度较好，说明今天的重点内容吸收比较及时。",
+      unstable: "课堂练习正确率有波动，主要问题不是完全不会，而是审题、细节和方法稳定性不足。",
+      low: "今天部分题目完成起来比较吃力，需要课后先回到基础概念和例题上重新梳理。"
+    };
+
+    const supportCopy = {
+      review: "家里重点帮他检查错题是否真正订正到位，不只看答案是否改完。",
+      dictation: "家里可以抽 8 到 10 分钟检查重点词汇和短语背默。",
+      reading: "家里可督促每天朗读或阅读 10 分钟，帮助形成语感和阅读速度。",
+      timing: "家里可以适当关注限时完成情况，训练速度和准确率的平衡。",
+      independent: "家里建议让他先独立完成，再对照答案订正，避免形成依赖。"
+    };
+
+    const toneWords = {
+      warm: {
+        opening: "整体学习状态不错",
+        advice: "建议",
+        close: "只要课后及时复习并把错题落实到位，后续效果会更明显。",
+        problem: "这些问题属于当前阶段比较常见的薄弱点，继续练习后会逐步稳定。"
+      },
+      direct: {
+        opening: "本节课目标比较明确",
+        advice: "接下来需要",
+        close: "请课后按要求完成复习和练习，保证课堂内容真正吸收。",
+        problem: "目前问题比较清楚，重点是把错因落实到具体订正和同类训练中。"
+      },
+      strict: {
+        opening: "本节课也暴露出一些需要重视的问题",
+        advice: "课后务必",
+        close: "请家长督促完成作业和复习，否则课堂效果容易打折扣。",
+        problem: "这些薄弱点不能只停留在听懂层面，需要通过订正、背默和限时练习真正解决。"
+      }
+    };
+
+    const variants = [
+      {
+        hello: name => `${name}家长您好，今天课堂上我们主要进行了`,
+        learn: "本节重点围绕",
+        performance: "从课堂表现看，",
+        mastery: "掌握情况方面，",
+        problemLead: "目前需要关注的是"
+      },
+      {
+        hello: name => `${name}家长您好，今天这节课重点完成了`,
+        learn: "课堂内容主要覆盖",
+        performance: "课堂过程中，",
+        mastery: "从练习反馈来看，",
+        problemLead: "接下来比较需要加强的是"
+      },
+      {
+        hello: name => `${name}家长您好，本次课我们集中处理了`,
+        learn: "具体知识点包括",
+        performance: "整体来看，",
+        mastery: "知识落实上，",
+        problemLead: "现阶段的薄弱点主要集中在"
+      },
+      {
+        hello: name => `${name}家长您好，今天我们围绕`,
+        learn: "课堂中重点处理了",
+        performance: "今天比较值得肯定的是，",
+        mastery: "从课堂练习看，",
+        problemLead: "后续要继续盯住的是"
+      },
+      {
+        hello: name => `${name}家长您好，本节课主要针对`,
+        learn: "训练内容包括",
+        performance: "课堂状态方面，",
+        mastery: "当前掌握情况是，",
+        problemLead: "本次课反映出的主要问题是"
+      },
+      {
+        hello: name => `${name}家长您好，今天课上我们完成了`,
+        learn: "重点复盘了",
+        performance: "今天课堂反馈显示，",
+        mastery: "吸收效果方面，",
+        problemLead: "下一步需要补强的是"
+      }
+    ];
+
+    const styleProfiles = {
+      daily: {
+        title: "",
+        focusEnd: "课堂中",
+        transition: "整体反馈如下：",
+        closePrefix: "课后建议"
+      },
+      progress: {
+        title: "",
+        focusEnd: "课堂中结合例题观察了他的吸收和迁移情况，",
+        transition: "今天课堂上有一些值得肯定的表现：",
+        closePrefix: "课后建议"
+      },
+      problem: {
+        title: "",
+        focusEnd: "课堂中边讲边观察错因，",
+        transition: "从结果看，问题已经比较清楚：",
+        closePrefix: "接下来建议"
+      },
+      exam: {
+        title: "",
+        focusEnd: "课堂中重点对照题型要求训练，",
+        transition: "目前最需要提升的是稳定得分能力：",
+        closePrefix: "为了提高得分稳定性，建议"
+      },
+      habit: {
+        title: "",
+        focusEnd: "课堂中除了知识点，也重点观察了完成习惯，",
+        transition: "今天反馈出来的习惯表现是：",
+        closePrefix: "课后建议家里配合"
+      },
+      brief: {
+        title: "",
+        focusEnd: "课堂中",
+        transition: "",
+        closePrefix: "课后"
+      }
+    };
+
+    const form = document.querySelector("#feedbackForm");
+    const board = document.querySelector("#knowledgeBoard");
+    const result = document.querySelector("#result");
+    const filledCount = document.querySelector("#filledCount");
+    const wordCount = document.querySelector("#wordCount");
+    const notice = document.querySelector("#notice");
+
+    function normalizeName(value) {
+      const name = value.trim();
+      if (!name) return "同学";
+      return name.endsWith("同学") ? name : `${name}同学`;
+    }
+
+    function selectedChips(field) {
+      return [...document.querySelectorAll(`[data-field="${field}"] .chip[aria-pressed="true"]`)]
+        .map(button => button.textContent.trim());
+    }
+
+    function selectedKnowledge() {
+      const picked = {};
+      Object.keys(groupNames).forEach(key => {
+        picked[key] = [...document.querySelectorAll(`[data-knowledge="${key}"][aria-pressed="true"]`)]
+          .map(button => button.textContent.trim());
+      });
+      return picked;
+    }
+
+    function flattenKnowledge(items) {
+      return Object.values(items).flat();
+    }
+
+    function joinItems(items) {
+      const clean = [...new Set(items.filter(Boolean).map(item => item.trim()))];
+      if (!clean.length) return "";
+      if (clean.length === 1) return clean[0];
+      return clean.join("、");
+    }
+
+    function groupKnowledgeSummary(picked) {
+      const parts = Object.entries(picked)
+        .filter(([, items]) => items.length)
+        .map(([group, items]) => `${groupNames[group]}：${joinItems(items)}`);
+      return parts.length ? parts.join("；") : "本阶段校内同步知识点和课堂练习";
+    }
+
+    function sentence(text) {
+      const cleaned = text.trim().replace(/[。；;,\s]+$/g, "");
+      return cleaned ? `${cleaned}。` : "";
+    }
+
+    function pick(list, salt = 0) {
+      return list[(state.variant + salt) % list.length];
+    }
+
+    function currentSuggestion() {
+      const grade = document.querySelector("#grade").value;
+      return suggestions[state.template]?.[grade] || suggestions.sync[grade];
+    }
+
+    function renderKnowledge() {
+      const grade = document.querySelector("#grade").value;
+      const groups = templateGroups[state.template] || templateGroups.sync;
+      board.innerHTML = groups.map(group => {
+        const items = knowledge[grade][group];
+        return `
+        <div class="knowledge-group">
+          <h4>${groupNames[group]} <span>${gradeNames[grade]} · ${templateCopy[state.template].label}</span></h4>
+          <div class="chips">
+            ${items.map(item => `<button class="chip" type="button" data-knowledge="${group}" aria-pressed="false">${item}</button>`).join("")}
+          </div>
+        </div>`;
+      }).join("");
+      bindKnowledgeChips();
+      updateCounts();
+    }
+
+    function bindKnowledgeChips() {
+      document.querySelectorAll("[data-knowledge]").forEach(button => {
+        button.addEventListener("click", () => {
+          button.setAttribute("aria-pressed", button.getAttribute("aria-pressed") !== "true");
+          updateCounts();
+        });
+      });
+    }
+
+    function setPressedByText(texts) {
+      const set = new Set(texts);
+      document.querySelectorAll(".chip").forEach(button => {
+        if (set.has(button.textContent.trim())) {
+          button.setAttribute("aria-pressed", "true");
+        }
+      });
+      updateCounts();
+    }
+
+    function applyPreset(name) {
+      const grade = document.querySelector("#grade").value;
+      const preset = presetMap[name] || [];
+      const templateByPreset = {
+        dictation: "sync",
+        grammarWeak: "grammar",
+        readingSlow: "reading",
+        writingUpgrade: "writing",
+        examSprint: "exam",
+        habit: "sync"
+      };
+      const styleByPreset = {
+        dictation: "progress",
+        grammarWeak: "problem",
+        readingSlow: "problem",
+        writingUpgrade: "progress",
+        examSprint: "exam",
+        habit: "habit"
+      };
+      const stageByPreset = {
+        dictation: "steady",
+        grammarWeak: "foundation",
+        readingSlow: "steady",
+        writingUpgrade: "active",
+        examSprint: "sprint",
+        habit: "passive"
+      };
+      state.template = templateByPreset[name] || state.template;
+      document.querySelector("#style").value = styleByPreset[name] || "daily";
+      document.querySelector("#learningStage").value = stageByPreset[name] || "steady";
+      document.querySelector("#accuracy").value = name === "examSprint" || name === "readingSlow" ? "unstable" : "normal";
+      document.querySelector("#homeSupport").value = name === "dictation" ? "dictation" : name === "habit" ? "independent" : name === "examSprint" ? "timing" : "review";
+      document.querySelectorAll(".template").forEach(item => item.classList.toggle("active", item.dataset.template === state.template));
+      renderKnowledge();
+      setPressedByText([...currentSuggestion(), ...preset]);
+    }
+
+    function buildKnowledgeSummary(picked) {
+      const parts = Object.entries(picked)
+        .filter(([, items]) => items.length)
+        .map(([group, items]) => `${groupNames[group]}部分主要是${joinItems(items)}`);
+      return parts.length ? parts.join("；") : "本阶段校内同步知识点和课堂练习";
+    }
+
+    function buildAutoHomework(knowledgeItems, homeworkTags, grade, template) {
+      const tasks = [];
+      if (homeworkTags.length) tasks.push(joinItems(homeworkTags));
+      if (knowledgeItems.some(item => /词|拼写|搭配|词汇/.test(item)) && !homeworkTags.join("").includes("词")) {
+        tasks.push("背默本节重点词汇和短语");
+      }
+      if (knowledgeItems.some(item => /语|从句|时|态|代词|介词|非谓语|主谓/.test(item)) && !homeworkTags.join("").includes("语法")) {
+        tasks.push("整理语法结构和典型错题");
+      }
+      if (knowledgeItems.some(item => /阅读|完形|长难句|主旨|推理|细节|七选五/.test(item))) {
+        tasks.push(grade === "g9" ? "完成一组限时阅读训练" : "完成同类阅读题巩固");
+      }
+      if (knowledgeItems.some(item => /作文|写作|应用文|句式|审题/.test(item)) || template === "writing") {
+        tasks.push("按课堂修改意见完善作文表达");
+      }
+      if (!tasks.length) tasks.push("完成课堂讲义订正，并复习今天勾画的重点");
+      return [...new Set(tasks)];
+    }
+
+    function buildFeedback() {
+      const data = new FormData(form);
+      const name = normalizeName(data.get("student") || "");
+      const grade = data.get("grade");
+      const tone = toneWords[data.get("tone")] || toneWords.warm;
+      const style = styleProfiles[data.get("style")] || styleProfiles.daily;
+      const template = templateCopy[state.template];
+      const variant = variants[state.variant % variants.length];
+      const picked = selectedKnowledge();
+      const knowledgeItems = flattenKnowledge(picked);
+      const performance = selectedChips("performance");
+      const mastery = selectedChips("mastery");
+      const problems = selectedChips("problems");
+      const homeworkTags = selectedChips("homeworkTags");
+      const customNote = (data.get("customNote") || "").trim();
+      const customHomework = (data.get("customHomework") || "").trim();
+      const length = data.get("length");
+      const learningStage = stageCopy[data.get("learningStage")];
+      const accuracy = accuracyCopy[data.get("accuracy")];
+      const homeSupport = supportCopy[data.get("homeSupport")];
+
+      const knowledgeSummary = groupKnowledgeSummary(picked);
+      const para1 = `${variant.hello(name)}${template.focus}。${variant.learn}${knowledgeSummary}，${style.focusEnd}${template.method}。`;
+
+      const performanceBase = [
+        `${variant.performance}${name}${tone.opening}`,
+        `${style.transition}${name}今天的课堂状态整体可跟进`,
+        `${variant.performance}${name}能够围绕课堂任务完成学习`
+      ];
+      const para2 = `${pick(performanceBase, 1)}${performance.length ? "，" + joinItems(performance) : ""}。${learningStage}${accuracy}` +
+        (mastery.length
+          ? `${variant.mastery}${name}${joinItems(mastery)}。`
+          : `${variant.mastery}${name}能跟随课堂完成主要内容，但仍需要通过课后练习让知识点更加稳定。`);
+
+      const problemSentences = [];
+      if (problems.length) problemSentences.push(`${variant.problemLead}${joinItems(problems)}`);
+      if (customNote) problemSentences.push(customNote);
+      const para3 = problemSentences.length
+        ? `${problemSentences.map(sentence).join("")}${tone.problem}`
+        : `${name}今天没有特别突出的新问题，后续重点是保持复习节奏，减少同类错误反复出现。`;
+
+      const autoHomework = buildAutoHomework(knowledgeItems, homeworkTags, grade, state.template);
+      if (customHomework) autoHomework.push(customHomework);
+      const para4 = `${style.closePrefix}${name}重点完成：${joinItems([...new Set(autoHomework)])}。${homeSupport}${tone.close}`;
+
+      const compact = paragraphs => paragraphs
+        .filter(Boolean)
+        .join("\n")
+        .replace(/\n{2,}/g, "\n")
+        .replace(/：。/g, "。")
+        .replace(/，。/g, "。");
+
+      if (length === "short") {
+        return data.get("style") === "brief"
+          ? compact([para1, para2, para4])
+          : compact([para1, para2, para3, para4]);
+      }
+
+      if (length === "long") {
+        const gradeTip = grade === "g9"
+          ? "初三阶段建议继续加强限时训练和错因归类，尤其要把词汇、语法和阅读方法放到中考题型中反复运用。"
+          : grade === "g8"
+            ? "初二知识开始明显承上启下，建议把语法结构、词形变化和阅读方法同步整理，避免后期综合题失分。"
+            : "初一阶段建议优先把词汇拼写、句子结构和朗读习惯打扎实，为后续语法和阅读学习打基础。";
+        return compact([para1, para2, para3, `${para4}${gradeTip}`]);
+      }
+
+      return compact([para1, para2, para3, para4]);
+    }
+
+    function updateCounts() {
+      const selected = document.querySelectorAll('.chip[aria-pressed="true"]').length;
+      const textFilled = ["student", "customNote", "customHomework"].filter(id => document.querySelector(`#${id}`).value.trim()).length;
+      filledCount.textContent = `${selected + textFilled} 项已选择`;
+      wordCount.textContent = `${result.value.replace(/\s/g, "").length} 字`;
+    }
+
+    function generate() {
+      result.value = buildFeedback();
+      updateCounts();
+      result.focus();
+    }
+
+    function bindStaticChips() {
+      document.querySelectorAll(".chip:not([data-knowledge]):not([data-preset])").forEach(button => {
+        button.setAttribute("aria-pressed", "false");
+        button.addEventListener("click", () => {
+          button.setAttribute("aria-pressed", button.getAttribute("aria-pressed") !== "true");
+          updateCounts();
+        });
+      });
+    }
+
+    document.querySelectorAll(".template").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".template").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        state.template = button.dataset.template;
+        renderKnowledge();
+      });
+    });
+
+    document.querySelector("#grade").addEventListener("change", renderKnowledge);
+    document.querySelector("#generateBtn").addEventListener("click", generate);
+    document.querySelector("#generateTopBtn").addEventListener("click", generate);
+
+    document.querySelector("#polishBtn").addEventListener("click", () => {
+      state.variant += 1;
+      generate();
+    });
+
+    document.querySelector("#clearKnowledgeBtn").addEventListener("click", () => {
+      document.querySelectorAll("[data-knowledge]").forEach(button => button.setAttribute("aria-pressed", "false"));
+      updateCounts();
+    });
+
+    document.querySelector("#suggestBtn").addEventListener("click", () => {
+      setPressedByText(currentSuggestion());
+    });
+
+    document.querySelectorAll("[data-preset]").forEach(button => {
+      button.setAttribute("aria-pressed", "false");
+      button.addEventListener("click", () => {
+        button.setAttribute("aria-pressed", button.getAttribute("aria-pressed") !== "true");
+        applyPreset(button.dataset.preset);
+      });
+    });
+
+    document.querySelector("#copyBtn").addEventListener("click", async () => {
+      if (!result.value.trim()) generate();
+      try {
+        await navigator.clipboard.writeText(result.value);
+      } catch (error) {
+        result.select();
+        document.execCommand("copy");
+      }
+      notice.classList.add("show");
+      setTimeout(() => notice.classList.remove("show"), 1800);
+    });
+
+    document.querySelector("#sampleBtn").addEventListener("click", () => {
+      form.reset();
+      document.querySelector("#student").value = "王";
+      document.querySelector("#grade").value = "g8";
+      document.querySelector("#tone").value = "warm";
+      document.querySelector("#style").value = "problem";
+      document.querySelector("#learningStage").value = "steady";
+      document.querySelector("#accuracy").value = "unstable";
+      document.querySelector("#homeSupport").value = "review";
+      document.querySelector("#length").value = "medium";
+      document.querySelectorAll(".template").forEach(item => item.classList.toggle("active", item.dataset.template === "grammar"));
+      state.template = "grammar";
+      renderKnowledge();
+      setPressedByText([
+        "现在完成时", "动词过去式和过去分词", "长难句拆分", "建议类作文",
+        "听课认真", "能主动回答问题", "基础概念已理解", "细节运用还需巩固",
+        "语法概念易混淆", "阅读定位偏慢", "背默本课重点词汇", "完成同类题巩固"
+      ]);
+      document.querySelector("#customNote").value = "今天在 have/has done 的选择上还会犹豫，阅读题需要更快抓住关键词。";
+      document.querySelector("#customHomework").value = "完成讲义 P3-P5，并订正今天标星的 4 道错题";
+      generate();
+    });
+
+    document.querySelector("#resetBtn").addEventListener("click", () => {
+      form.reset();
+      result.value = "";
+      state.template = "sync";
+      state.variant = 0;
+      document.querySelectorAll(".template").forEach(item => item.classList.toggle("active", item.dataset.template === "sync"));
+      renderKnowledge();
+      document.querySelectorAll(".chip").forEach(button => button.setAttribute("aria-pressed", "false"));
+      updateCounts();
+    });
+
+    form.addEventListener("input", updateCounts);
+    result.addEventListener("input", updateCounts);
+    bindStaticChips();
+    renderKnowledge();
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
